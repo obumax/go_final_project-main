@@ -1,6 +1,6 @@
 module github.com/obumax/go_final_project-main
 
-go 1.23.3
+go 1.24.4
 
 replace go1f => ./
 
