@@ -53,12 +53,14 @@ http://localhost:7540
 
 1. Получите токен, отправив запрос на
 /api/signin
-Например:
+Пример команды :
 ```bash
+TODO_PASSWORD=hey_Practicum!
 curl -X POST \
-  http://localhost:7540/api/signin \
-  -H 'Content-Type: application/json' \
-  -d '{"username": "your_username", "password": "your_password"}'
+ http://localhost:7540/api/signin \
+ -H 'Content-Type: application/json' \
+ -d '{"password": "'"$TODO_PASSWORD"'"}'
+echo "Token = \"$TOKEN\""
   ```
 Извлеките токен из ответа.
 
@@ -72,7 +74,7 @@ Token = "ваш_токен"
 ```
 Например:
 ```bash
-Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTEwMTU5NjF9.wMOd_IDyLdMDOpyK-meYy0FPAgz60SNQzdeE6S29hIo"
+Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTExOTAyMjh9.aonh3kMcjcibh6HF_rNg9ceRxTRLUmv1JbfGMoRrqrM"
 ```
 
 3. Запустите тесты:
@@ -96,6 +98,8 @@ docker run -d --name todo-web --env-file .env -p 7540:7540 -v $(pwd)/scheduler.d
 http://localhost:7540
 
 Значения переменных окружения .env файла, используемые при сборке:
+```bash
 TODO_PORT=7540
 TODO_DBFILE=/data/scheduler.db
 TODO_PASSWORD=hey_Practicum!
+```

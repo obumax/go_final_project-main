@@ -12,16 +12,21 @@ import (
 // doneTaskHandler обрабатывает запросы на завершение задачи (/api/task/done)
 func doneTaskHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
+	if id == "" {
+		writeError(w, http.StatusBadRequest, "не передан id задачи")
+		return
+	}
+
 	task, err := db.GetTask(id)
 	if err != nil {
-		writeError(w, http.StatusOK, err.Error())
+		writeError(w, http.StatusNotFound, "задача не найдена")
 		return
 	}
 
 	// Если нет правила повторения, задача удаляется
 	if task.Repeat == "" {
 		if err := db.DeleteTask(id); err != nil {
-			writeError(w, http.StatusOK, err.Error())
+			writeError(w, http.StatusInternalServerError, fmt.Sprintf("не удалось пометить задачу как выполненную: %v", err))
 			return
 		}
 		writeJSON(w, http.StatusOK, map[string]any{})
@@ -34,12 +39,12 @@ func doneTaskHandler(w http.ResponseWriter, r *http.Request) {
 
 	nextDate, err := service.NextDate(today, task.Date, task.Repeat)
 	if err != nil {
-		writeError(w, http.StatusOK, fmt.Sprintf("ошибка при вычислении следующей даты: %v", err))
+		writeError(w, http.StatusInternalServerError, fmt.Sprintf("ошибка при вычислении следующей даты: %v", err))
 		return
 	}
 
 	if err := db.UpdateDate(nextDate, id); err != nil {
-		writeError(w, http.StatusOK, err.Error())
+		writeError(w, http.StatusInternalServerError, fmt.Sprintf("не удалось обновить дату задачи: %v", err))
 		return
 	}
 

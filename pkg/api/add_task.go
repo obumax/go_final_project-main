@@ -16,7 +16,7 @@ func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Десериализация JSON
 	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
-		writeError(w, http.StatusBadRequest, "ошибка декодирования JSON")
+		writeError(w, http.StatusBadRequest, fmt.Sprintf("ошибка декодирования JSON: %v", err))
 		return
 	}
 

@@ -9,10 +9,16 @@ import (
 // getTaskHandler обрабатывает запросы на получение задачи по ID
 func getTaskHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
-	task, err := db.GetTask(id)
-	if err != nil {
-		writeError(w, http.StatusOK, err.Error())
+	if id == "" {
+		writeError(w, http.StatusBadRequest, "не передан id задачи")
 		return
 	}
+
+	task, err := db.GetTask(id)
+	if err != nil {
+		writeError(w, http.StatusNotFound, "задача не найдена")
+		return
+	}
+
 	writeJSON(w, http.StatusOK, task)
 }

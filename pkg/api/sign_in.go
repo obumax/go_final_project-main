@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -19,7 +20,7 @@ type signInRequest struct {
 func signInHandler(w http.ResponseWriter, r *http.Request) {
 	var req signInRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		writeError(w, http.StatusBadRequest, "некорректный JSON")
+		writeError(w, http.StatusBadRequest, fmt.Sprintf("ошибка декодирования JSON: %v", err))
 		return
 	}
 
